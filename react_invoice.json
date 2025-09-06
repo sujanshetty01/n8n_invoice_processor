@@ -1,0 +1,381 @@
+{
+  "name": "react_invoice",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "8e7e3609-84d2-4ae0-8cda-9f4334ebf00a",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        0
+      ],
+      "id": "8a3bc49c-b578-4b58-a92e-b4e97e00f04c",
+      "name": "Webhook",
+      "webhookId": "8e7e3609-84d2-4ae0-8cda-9f4334ebf00a"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "invoice",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "f9b6bc0a-9d84-4997-9a3a-50132678fec8",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an invoice data extractor. \n\nExtract the following fields from this invoice {{ $json.text }}:\n\n- Invoice Number\n- Client Name\n- Invoice Date\n- Due Date\n- PO Number\n- Subtotal\n- Tax\n- Total Amount\n- Notes\n- Terms\n\nReturn the result ONLY as valid JSON in this format:\n{\n  \"invoice_number\": \"...\",\n  \"client_name\": \"...\",\n  \"invoice_date\": \"...\",\n  \"due_date\": \"...\",\n  \"po_number\": \"...\",\n  \"subtotal\": \"...\",\n  \"tax\": \"...\",\n  \"total_amount\": \"...\",\n  \"notes\": \"...\",\n  \"terms\": \"...\"\n}\n ",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        464,
+        0
+      ],
+      "id": "9f87a850-8169-4c25-8372-00bcdf76e944",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        464,
+        176
+      ],
+      "id": "517a8524-1378-43c8-b807-51fa7291c629",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "LuRiXRXf2DLFYDe8",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1_9x_EWFh39kchZdhZNuBeI2f3iHKZyojCBHYtpDBanQ",
+          "mode": "list",
+          "cachedResultName": "invoice",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_9x_EWFh39kchZdhZNuBeI2f3iHKZyojCBHYtpDBanQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_9x_EWFh39kchZdhZNuBeI2f3iHKZyojCBHYtpDBanQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "invoice_number": "={{ $json.output.invoice_number }}",
+            "client_name": "={{ $json.output.client_name }}",
+            "invoice_date": "={{ $json.output.invoice_date }}",
+            "subtotal": "={{ $json.output.subtotal }}",
+            "tax": "={{ $json.output.tax }}",
+            "total_amount": "={{ $json.output.total_amount }}",
+            "due_date": "={{ $json.output.due_date }}"
+          },
+          "matchingColumns": [
+            "invoice_number"
+          ],
+          "schema": [
+            {
+              "id": "Sl No",
+              "displayName": "Sl No",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "invoice_number",
+              "displayName": "invoice_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "invoice_date",
+              "displayName": "invoice_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "due_date",
+              "displayName": "due_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subtotal",
+              "displayName": "subtotal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "tax",
+              "displayName": "tax",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_amount",
+              "displayName": "total_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1216,
+        0
+      ],
+      "id": "25e92412-6cb7-4f72-8325-867332351b58",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CvmRgtC8f5PC97wN",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.text }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "invoice_number",
+              "description": "invoice number the bill"
+            },
+            {
+              "name": "client_name",
+              "description": "name of the client"
+            },
+            {
+              "name": "invoice_date",
+              "type": "date",
+              "description": "date of the invoice"
+            },
+            {
+              "name": "subtotal",
+              "type": "number",
+              "description": "amount to be paid"
+            },
+            {
+              "name": "total_amount",
+              "type": "number",
+              "description": "amount after taxes"
+            },
+            {
+              "name": "tax",
+              "type": "number",
+              "description": "18% tax"
+            },
+            {
+              "name": "due_date",
+              "type": "date",
+              "description": "prior this date the bill needs to be settled"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "b7b49a57-cee8-4d8c-9ce7-ba4e9c88ef4e",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        832,
+        192
+      ],
+      "id": "43c8f2db-b4b6-4523-9063-c1ae6e2a6323",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "LuRiXRXf2DLFYDe8",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "sujan.ec22@bmsce.ac.in",
+        "subject": "=invoice number: {{ $json.invoice_number }}",
+        "message": "=<!doctype html>\n<html>\n  <head>\n    <meta charset=\"utf-8\" />\n    <title>New Invoice Notification</title>\n    <style>\n      .wrap{max-width:640px;margin:0 auto;font-family:Inter,Arial,Helvetica,sans-serif;color:#111}\n      .card{background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;padding:24px}\n      h1{font-size:18px;margin:0 0 12px}\n      .muted{color:#6b7280}\n      .badge{display:inline-block;background:#eef2ff;color:#3730a3;border-radius:999px;padding:2px 10px;font-size:12px}\n      table{width:100%;border-collapse:collapse;margin-top:16px}\n      th,td{border:1px solid #e5e7eb;padding:10px;text-align:left;font-size:14px}\n      th{background:#f9fafb}\n      .right{text-align:right}\n      .totals td{font-weight:600}\n      .footer{margin-top:16px;font-size:12px;color:#6b7280}\n    </style>\n  </head>\n  <body style=\"background:#f3f4f6;padding:24px\">\n    <div class=\"wrap\">\n      <div class=\"card\">\n        <h1>New Invoice Received <span class=\"badge\">#{{ $json[\"invoice_number\"] }}</span></h1>\n        <div class=\"muted\" style=\"margin-bottom:10px\">\n          Client: <strong>{{ $json[\"client_name\"] }}</strong>\n        </div>\n\n        <table aria-label=\"Invoice summary\">\n          <tr>\n            <th>Invoice Date</th>\n            <td>{{ $json[\"invoice_date\"] }}</td>\n            <th>Due Date</th>\n            <td>{{ $json[\"due_date\"] }}</td>\n          </tr>\n          <tr>\n            <th>PO Number</th>\n            <td>{{ $json[\"po_number\"] || \"—\" }}</td>\n            <th>Terms</th>\n            <td>{{ $json[\"terms\"] || \"—\" }}</td>\n          </tr>\n        </table>\n\n        <table aria-label=\"Amounts\">\n          <tr>\n            <th>Description</th>\n            <th class=\"right\">Amount</th>\n          </tr>\n          <tr>\n            <td>Subtotal</td>\n            <td class=\"right\">{{ $json[\"subtotal\"] }}</td>\n          </tr>\n          <tr>\n            <td>Tax</td>\n            <td class=\"right\">{{ $json[\"tax\"] }}</td>\n          </tr>\n          <tr class=\"totals\">\n            <td>Total</td>\n            <td class=\"right\">{{ $json[\"total_amount\"] }}</td>\n          </tr>\n        </table>\n\n        <p class=\"footer\">\n          Notes: {{ $json[\"notes\"] || \"—\" }} <br/>\n          The original PDF invoice is attached.\n        </p>\n      </div>\n    </div>\n  </body>\n</html>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1520,
+        0
+      ],
+      "id": "a0821c55-e949-48e5-b6ff-ed051affaf88",
+      "name": "Send a message",
+      "webhookId": "2bb0c6dc-3080-4ee6-a67a-ac9707b93c7c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ZRHjrdaGP8TrxFdB",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2d9ba10e-e4e4-4ffe-83eb-3210cb6f63c9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9b7fd09d9cf2071cfeba045a0c2713f7ab2602ad60b72e79b16f370351b83ad4"
+  },
+  "id": "cUz66YKkEIRj1MEQ",
+  "tags": []
+}
